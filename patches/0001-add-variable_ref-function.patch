@@ -1,0 +1,63 @@
+diff -ZBb -E -u -x '*.o' -x '*.so' -x '*.a' -r tinyscheme-1.41/scheme.c tinyscheme-1.41.my/scheme.c
+--- tinyscheme-1.41/scheme.c	2013-04-15 04:08:33.000000000 +0800
++++ tinyscheme-1.41.my/scheme.c	2016-10-24 16:01:58.659366240 +0800
+@@ -229,6 +229,7 @@
+ INTERFACE INLINE int is_macro(pointer p)    { return (type(p)==T_MACRO); }
+ INTERFACE INLINE pointer closure_code(pointer p)   { return car(p); }
+ INTERFACE INLINE pointer closure_env(pointer p)    { return cdr(p); }
++INTERFACE pointer variable_ref(scheme *sc, pointer env, pointer hdl);
+ 
+ INTERFACE INLINE int is_continuation(pointer p)    { return (type(p)==T_CONTINUATION); }
+ #define cont_dump(p)     cdr(p)
+@@ -4597,6 +4598,7 @@
+   is_macro,
+   closure_code,
+   closure_env,
++  variable_ref,
+ 
+   is_continuation,
+   is_promise,
+@@ -4861,6 +4863,15 @@
+      }
+ }
+ 
++INTERFACE pointer variable_ref(scheme *sc, pointer env, pointer hdl)
++{
++    pointer x;
++    x = find_slot_in_env(sc, env, hdl, 1);
++
++    return x == sc->NIL ? x : slot_value_in_env (x);
++}
++
++
+ #if !STANDALONE
+ void scheme_register_foreign_func(scheme * sc, scheme_registerable * sr)
+ {
+@@ -5049,3 +5060,5 @@
+ c-file-style: "k&r"
+ End:
+ */
++
++/* vim: set ts=4 sw=4 et : */
+diff -ZBb -E -u -x '*.o' -x '*.so' -x '*.a' -r tinyscheme-1.41/scheme.h tinyscheme-1.41.my/scheme.h
+--- tinyscheme-1.41/scheme.h	2013-04-15 04:08:33.000000000 +0800
++++ tinyscheme-1.41.my/scheme.h	2016-10-24 16:10:42.042417438 +0800
+@@ -216,6 +216,7 @@
+   int (*is_macro)(pointer p);
+   pointer (*closure_code)(pointer p);
+   pointer (*closure_env)(pointer p);
++  pointer (*variable_ref)(scheme *sc, pointer env, pointer hdl);
+ 
+   int (*is_continuation)(pointer p);
+   int (*is_promise)(pointer p);
+diff -ZBb -E -u -x '*.o' -x '*.so' -x '*.a' -r tinyscheme-1.41/scheme-private.h tinyscheme-1.41.my/scheme-private.h
+--- tinyscheme-1.41/scheme-private.h	2013-04-15 04:08:33.000000000 +0800
++++ tinyscheme-1.41.my/scheme-private.h	2016-10-24 16:12:31.789412564 +0800
+@@ -190,6 +190,7 @@
+ #endif
+ pointer closure_code(pointer p);
+ pointer closure_env(pointer p);
++pointer variable_ref(scheme *sc, pointer env, pointer hdl);
+ 
+ int is_continuation(pointer p);
+ int is_promise(pointer p);

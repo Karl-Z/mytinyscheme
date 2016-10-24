@@ -7,6 +7,7 @@ SRCDIR1=$(SRCDIR)/re
 SRCURL2=http://heras-gilsanz.com/manuel/tsx-1.1.tgz
 SRCPKG2=tsx-1.1.tgz
 SRCDIR2=$(SRCDIR)/tsx-1.1
+PATCHES=patches/0001-add-variable_ref-function.patch
 
 all: .builded
 
@@ -30,7 +31,7 @@ unpack: .unpacked
 
 patch: .patched
 .patched: .unpacked
-	test -e "$(PATCH1)" && cat $(PATCH1) | patch -d $(SRCDIR) -p1 ||:
+	for p in $(PATCHES); do test -e "$$p" && cat $$p | patch -d $(SRCDIR) -p1 ||:; done
 	touch $@
 
 build: .builded
@@ -38,9 +39,13 @@ build: .builded
 	$(MAKE) -C $(SRCDIR)
 	$(MAKE) -C $(SRCDIR1) -f re.makefile  SCHEME_H_DIR=..
 	$(MAKE) -C $(SRCDIR2)
+	$(MAKE) -C $(SRCDIR) clean && $(MAKE) -C $(SRCDIR) PLATFORM_FEATURES=-DSTANDALONE=0 libtinyscheme.a
 	touch $@
 
-.PHONY: clean
+patches: $(PATCHES)
+	-@diff -ZBb -E -u -x '*.o' -x '*.so' -x '*.a' -r tinyscheme-1.41 tinyscheme-1.41.my |grep -v '^Only' 2>/dev/null
+
+.PHONY: clean patches
 clean:
 	rm -rf .*ed
 	rm -rf $(SRCDIR)
