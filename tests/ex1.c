@@ -30,12 +30,9 @@ int main(int argc, char ** argv) {
                 puts ("param1=default value");
 
                 scheme_load_named_file (sc, fp, argv[1]);
-                puts ("");
                 p1 = variable_ref (sc, sc->global_env, symvar);
-                char *newval;
                 if (p1 != sc->NIL) {
-                        newval = string_value(p1);
-                        printf ("param1=%s", newval);
+                        printf ("param1=%s", string_value(p1));
                 }
 
         }
