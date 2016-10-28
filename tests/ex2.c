@@ -55,6 +55,14 @@ void start_scheme (scheme **scptr) {
 
         scheme_set_input_port_file (*scptr, stdin);
         scheme_set_output_port_file (*scptr, stdout);
+#ifdef USE_REGEX
+	// use re extension
+	init_re (*scptr);
+#endif
+#ifdef USE_TSX
+	// use tsx extension
+	init_tsx (*scptr);
+#endif
 	init_parameters (*scptr);
 }
 

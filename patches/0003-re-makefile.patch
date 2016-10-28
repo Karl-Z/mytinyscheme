@@ -1,0 +1,32 @@
+--- tinyscheme-1.41/re/re.makefile.orig	2016-10-28 11:20:42.869045089 -0400
++++ tinyscheme-1.41/re/re.makefile	2016-10-28 11:24:13.505054789 -0400
+@@ -22,7 +22,7 @@
+  
+ # Linux 
+ LD = gcc 
+-LDFLAGS = -shared 
++LDFLAGS = 
+ SYS_LIBS= 
+  
+ # Solaris 
+@@ -34,13 +34,17 @@
+ SRCS = re.c debug.c regcomp.c regerror.c regexec.c regfree.c split.c 
+ OBJS = $(SRCS:.c=.$(Osuf)) 
+  
+-all: re.$(SOsuf) 
++all: re.$(SOsuf) libre.a
+  
+ %.$(Osuf): %.c 
+ 	$(CC) -c $(DEBUG) -DUSE_DL -I. -I$(SCHEME_H_DIR) $+ 
+  
+ re.$(SOsuf): $(OBJS) 
+-	$(LD) $(LDFLAGS) $(OUT) $+ $(SYS_LIBS) 
++	$(LD) -shared $(LDFLAGS) $(OUT) $+ $(SYS_LIBS) 
++
++libre.a: $(OBJS)
++	ar rcs $@ $+
++	ranlib $@
+  
+ clean: 
+-	-rm -f $(OBJS) re.$(SOsuf) 
++	-rm -f $(OBJS) re.$(SOsuf) libre.a

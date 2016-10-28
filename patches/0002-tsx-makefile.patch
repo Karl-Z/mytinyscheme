@@ -1,0 +1,31 @@
+--- tinyscheme-1.41/tsx/Makefile.orig	2016-10-28 11:03:53.083051373 -0400
++++ tinyscheme-1.41/tsx/Makefile	2016-10-28 11:09:39.179792576 -0400
+@@ -1,16 +1,20 @@
+-#DEBUG=-g
+-DEBUG=
+ SCHEME_H_DIR=..
+ CC=gcc
+-CFLAGS=-DUSE_DL=1 -I $(SCHEME_H_DIR)
++CFLAGS=-DUSE_DL=1 -I$(SCHEME_H_DIR) -fPIC
+ 
+-tsx.so : tsx.c tsx.h Makefile
+-	$(CC) -shared -Wall -fPIC $(CFLAGS) -o tsx.so $(DEBUG) tsx.c
++all: tsx.so libtsx.a
++
++libtsx.a : tsx.c tsx.h Makefile
++	$(CC) -c -Wall $(CFLAGS) -o tsx.o $(DEBUG) tsx.c
++	ar rcs $@ tsx.o
++	ranlib $@
++
++tsx.so : tsx.o
++	$(CC) -shared -Wall $(CFLAGS) -o tsx.so $<
+ 	strip tsx.so
+-	ls -l tsx.so
+ 
+ .PHONY : clean
+ clean:
+ 	rm -f *.o
+ 	rm -f tsx.so
+-	rm -f *~
+\ No newline at end of file
++	rm -f *.o *.a *~

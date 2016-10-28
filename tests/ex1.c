@@ -32,7 +32,7 @@ int main(int argc, char ** argv) {
                 scheme_load_named_file (sc, fp, argv[1]);
                 p1 = variable_ref (sc, sc->global_env, symvar);
                 if (p1 != sc->NIL) {
-                        printf ("param1=%s", string_value(p1));
+                        printf ("param1=%s\n", string_value(p1));
                 }
 
         }

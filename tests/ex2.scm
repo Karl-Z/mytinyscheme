@@ -3,3 +3,11 @@
 (define ftp-user "ftp")
 (define ftp-pass "ftppass")
 
+(write re-match)
+(newline)
+(write (re-match "a.*c" "abc"))
+(newline)
+(write time)
+(newline)
+(display (time))
+(newline)

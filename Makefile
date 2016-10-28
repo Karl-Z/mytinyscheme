@@ -6,8 +6,8 @@ SRCPKG1=re-1.3.tar.gz
 SRCDIR1=$(SRCDIR)/re
 SRCURL2=http://heras-gilsanz.com/manuel/tsx-1.1.tgz
 SRCPKG2=tsx-1.1.tgz
-SRCDIR2=$(SRCDIR)/tsx-1.1
-PATCHES=patches/0001-add-variable_ref-function.patch
+SRCDIR2=$(SRCDIR)/tsx
+PATCHES=$(shell echo patches/*.patch)
 TESTSDIR=tests
 
 all: .builded
@@ -26,8 +26,12 @@ $(SRCPKG2):
 unpack: .unpacked
 .unpacked: .downloaded
 	unzip $(SRCPKG)
-	tar xzf $(SRCPKG1) -C $(SRCDIR)
-	tar xzf $(SRCPKG2) -C $(SRCDIR)
+
+	mkdir -p $(SRCDIR1)
+	tar xzf $(SRCPKG1) -C $(SRCDIR1) --strip-component 1
+
+	mkdir -p $(SRCDIR2)
+	tar xzf $(SRCPKG2) -C $(SRCDIR2) --strip-component 1
 	touch $@
 
 patch: .patched
